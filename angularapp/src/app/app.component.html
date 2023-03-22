@@ -1,0 +1,55 @@
+﻿<form 
+      class="container" 
+      [formGroup]="fileUploadForm"
+      [ngSwitch]="isSucceed">
+      <h1 class="p-1 display-4 mt-4 mb-4">File Upload</h1>
+      <ng-container *ngSwitchCase="true">
+        <h3 role="button" class="text-success" (click)="onOk()">
+          Success! File has been uploaded
+        </h3>
+      </ng-container>
+      <ng-container *ngSwitchCase="false">
+        <h3 role="button" class="text-danger" (click)="onOk()">
+          Failed! File has not been uploaded
+        </h3>
+      </ng-container>
+      <ng-container *ngSwitchCase="undefined">
+        <div class="form-row">
+          <div class="mb-3">
+            <label class="form-label user-select-none" for="validationServer01">Email</label>
+            <input 
+              type="email" 
+              formControlName="Email"
+              class="form-control {{email!.valid ? 'is-valid': (email!.dirty ? 'is-invalid': '')}}"
+              placeholder="example@ukr.net" 
+              required>
+            <div class="valid-feedback">
+              Looks good!
+            </div>
+            <div *ngIf="email!.errors?.['required']" class="invalid-feedback">
+              Enter your email
+            </div>
+            <div *ngIf="email!.errors?.['pattern']" class="invalid-feedback">
+              Invalid email
+            </div>
+          </div>
+          <div class="mb-3" >
+            <label class="form-label user-select-none" for="customFile">Document to upload</label>
+            <input class="form-control {{document!.valid && documentSource!.valid ? 'is-valid': (document!.dirty ? 'is-invalid': '')}}" accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document" type="file" formControlName="Document" (change)="onFilePicked($event)" required />
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+              <div 
+                *ngIf="document!.errors?.['required']" 
+                class="invalid-feedback">You haven't chosen document</div>
+              <div *ngIf="documentSource!.errors?.['fileTypeIsValid'] && !document!.errors?.['required']" class="invalid-feedback">
+                Invalid type of chosen document
+              </div>
+          </div>
+        </div>
+        <button [hidden]="isLoading" [disabled]="!fileUploadForm.valid" (click)="upload()" class="btn btn-primary mt-2" type="submit">Submit</button>
+        <div [hidden]="!isLoading"  class="spinner-grow" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </ng-container>
+  </form>
